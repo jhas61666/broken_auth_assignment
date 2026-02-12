@@ -1,0 +1,45 @@
+PS C:\Users\91997\Desktop\broken_auth_assignment> $body = @{
+>>     email = "jhas61666@gmail.com"
+>>     password = "password123"
+>> } | ConvertTo-Json
+>> 
+PS C:\Users\91997\Desktop\broken_auth_assignment> Invoke-RestMethod -Uri "http://localhost:3000/auth/login" -Method Post -Body $body -ContentType "application/json"
+
+message  loginSessionId
+-------  --------------
+OTP sent ybshfqi       
+
+
+PS C:\Users\91997\Desktop\broken_auth_assignment> $verifyBody = @{
+>>     loginSessionId = "ybshfqi"
+>>     otp = 349289
+>> } | ConvertTo-Json
+>> 
+PS C:\Users\91997\Desktop\broken_auth_assignment> Invoke-RestMethod -Uri "http://localhost:3000/auth/verify-otp" -Method Post -Body $verifyBody -ContentType "application/json" -SessionVariable mySession
+
+message     
+-------
+OTP verified
+
+
+PS C:\Users\91997\Desktop\broken_auth_assignment> $tokenResponse = Invoke-RestMethod -Uri "http://localhost:3000/auth/token" -Method Post -WebSession $mySession
+PS C:\Users\91997\Desktop\broken_auth_assignment> $tokenResponse.access_token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpoYXM2MTY2NkBnbWFpbC5jb20iLCJzZXNzaW9uSWQiOiJ5YnNoZnFpIiwiaWF0IjoxNzcwODg4NzUwLCJleHAiOjE3NzA4ODk2NTB9.JKaHwf_HouyPv9U7OXOTQeKPv6RjfuLbk5NIiSDDgDE
+PS C:\Users\91997\Desktop\broken_auth_assignment> $jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpoYXM2MTY2NkBnbWFpbC5jb20iLCJzZXNzaW9uSWQiOiJ5YnNoZnFpIiwiaWF0IjoxNzcwODg4NzUwLCJleHAiOjE3NzA4ODk2NTB9.JKaHwf_HouyPv9U7OXOTQeKPv6RjfuLbk5NIiSDDgDE"
+PS C:\Users\91997\Desktop\broken_auth_assignment> 
+PS C:\Users\91997\Desktop\broken_auth_assignment> Invoke-RestMethod -Uri "http://localhost:3000/protected" -Method Get -Headers @{ Authorization = "Bearer $jwt" }
+
+message        user
+-------        ----
+Access granted @{email=jhas61666@gmail.com; sessionId=ybshfqi; iat=1770888750; exp=177... 
+
+
+PS C:\Users\91997\Desktop\broken_auth_assignment> $response = Invoke-RestMethod -Uri "http://localhost:3000/protected" -Method Get -Headers @{ Authorization = "Bearer $jwt" }      
+PS C:\Users\91997\Desktop\broken_auth_assignment> $response.success_flag
+FLAG-amhhczYxNjY2QGdtYWlsLmNvbV9DT01QTEVURUQ=
+PS C:\Users\91997\Desktop\broken_auth_assignment>
+
+
+
+
+In 
